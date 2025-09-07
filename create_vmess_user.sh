@@ -30,7 +30,7 @@ if grep -q "\"$user\"" "$CONFIG_FILE"; then
 fi
 
 # --- Simpan limit IP ---
-echo "$iplim" > /etc/julak/limit/ssh/ip//${USERNAME}
+echo "$iplim" > /etc/julak/limit/vmess/ip//${user}
 
 # Add to config
 sed -i '/#vmess$/a\### '"$user $exp"'\
