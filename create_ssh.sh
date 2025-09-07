@@ -35,24 +35,26 @@ echo -e "$PASSWORD\n$PASSWORD\n" | passwd "$USERNAME" &> /dev/null
 
 # --- Mengambil Informasi Server ---
 domain=$(cat /etc/xray/domain 2>/dev/null || echo "not_set")
-
+ISP=$(cat /root/.isp 2>/dev/null || echo "Unknown")
+CITY=$(cat /root/.city 2>/dev/null || echo "Unknown")
 
 # --- Membuat File .txt di Web Server ---
-mkdir -p /var/www/html/
-cat > /var/www/html/ssh-$USERNAME.txt <<-END
+cat > /var/www/html/ssh-${USERNAME}.txt <<-END
 SSH & OpenVPN Account Details
 ===============================
 Username        : $USERNAME
 Password        : $PASSWORD
-Expired On      : $EXPIRED_DATE
+Expired On      : $EXPIRED_DISPLAY
 -------------------------------
 Host / Server   : $domain
+ISP             : $ISP
+City            : $CITY
 Login Limit     : $IP_LIMIT IP
 -------------------------------
 Port Details:
 - OpenSSH       : 22
 - Dropbear      : 143, 109
-- Udp Custom    : 1-65535
+- SSH UDP       : 1-65535
 - SSH WS        : 80, 8080
 - SSH SSL WS    : 443
 - SSL/TLS       : 443
@@ -75,6 +77,47 @@ END
 echo "### $USERNAME $PASSWORD $EXPIRED_DATE" >> /etc/ssh/.ssh.db
 # =======================================================
 
+# --- Membuat log file ---
+cat > /etc/xray/log-createssh-${USERNAME}.log <<-END
+◇━━━━━━━━━━━━━━━━━◇
+SSH Premium Account
+◇━━━━━━━━━━━━━━━━━◇
+Username        :  $USERNAME
+Password        :  $PASSWORD
+Expired On      :  $EXPIRED_DISPLAY
+◇━━━━━━━━━━━━━━━━━◇
+ISP             :  $ISP
+CITY            :  $CITY
+Host            :  $domain
+Login Limit     :  ${IP_LIMIT} IP
+Port OpenSSH    :  22
+Port Dropbear   :  109, 143
+Port SSH UDP    :  1-65535
+Port SSH WS     :  80, 8080
+Port SSH SSL WS :  443
+Port SSL/TLS    :  443
+Port OVPN WS SSL:  2086
+Port OVPN SSL   :  990
+Port OVPN TCP   :  1194
+Port OVPN UDP   :  2200
+Proxy Squid     :  3128
+BadVPN UDP      :  7100, 7300, 7300
+◇━━━━━━━━━━━━━━━━━◇
+UDP CUSTOM      : $domain:1-65535@$USERNAME:$PASSWORD
+◇━━━━━━━━━━━━━━━━━◇
+HTTP COSTUM     : $domain:80@$USERNAME:$PASSWORD
+◇━━━━━━━━━━━━━━━━━◇
+Payload WS/WSS  :
+GET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: ws[crlf][crlf]
+◇━━━━━━━━━━━━━━━━━◇
+OpenVPN SSL     :  http://$domain:81/ssl.ovpn
+OpenVPN TCP     :  http://$domain:81/tcp.ovpn
+OpenVPN UDP     :  http://$domain:81/udp.ovpn
+◇━━━━━━━━━━━━━━━━━◇
+Save Link Account: http://$domain:81/ssh-$USERNAME.txt
+◇━━━━━━━━━━━━━━━━━◇
+END
+
 # --- Menampilkan Output Lengkap untuk Bot Telegram (Dipercantik) ---
 cat << EOF
 🎊 SSH Premium Account Created 🎊
@@ -83,13 +126,15 @@ cat << EOF
   ┣ Username   : ${USERNAME}
   ┣ Password   : ${PASSWORD}
   ┣ Host       : ${domain}
-  ┗ Expired On : ${EXPIRED_DATE}
+  ┗ Expired On : ${EXPIRED_DISPLAY}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔌 Connection Info
+  ┣ ISP        : ${ISP}
+  ┣ City       : ${CITY}
   ┣ Limit      : ${IP_LIMIT} Device(s)
   ┣ OpenSSH    : 22
   ┣ Dropbear   : 109, 143
-  ┣ Udp Custom : 1-65535
+  ┣ Udp-Custom : 1-65535
   ┣ SSL/TLS    : 443
   ┣ SSH WS     : 80, 8080
   ┣ SSH SSL WS : 443
@@ -99,14 +144,13 @@ cat << EOF
   ┣ OVPN TCP : http://${domain}:81/tcp.ovpn
   ┣ OVPN UDP : http://${domain}:81/udp.ovpn
   ┗ OVPN SSL : http://${domain}:81/ssl.ovpn
-  
   📋 Payload WS/WSS:
   GET / HTTP/1.1[crlf]Host: ${domain}[crlf]Upgrade: websocket[crlf]Connection: upgrade[crlf][crlf]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 💾 Save Full Config:
-http://${domain}:89/ssh-${USERNAME}.txt
+https://${domain}:81/ssh-${USERNAME}.txt
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
-🙏 Terima kasih telah order di Julak SSH
+🙏 Terima kasih telah order di Hokage Legend
 EOF
 
 # Mengakhiri skrip dengan status sukses
