@@ -1,8 +1,7 @@
 #!/bin/bash
-
 # =================================================================
-#           Skrip Pembuatan Akun SSH untuk Julak-BOT
-#           Versi Final: Diperbaiki & Disederhanakan
+#           Skrip Pembuatan Akun SSH untuk Hokage-BOT
+#           Disesuaikan dengan Format VPS
 # =================================================================
 
 # --- Validasi Input ---
@@ -17,26 +16,49 @@ USERNAME=$1
 PASSWORD=$2
 DURATION=$3
 IP_LIMIT=$4
-EXPIRED_DATE=$(date -d "+$DURATION days" +"%b %d, %Y")
-EXPIRED_UNIX=$(date -d "+$DURATION days" +"%Y-%m-%d")
 
-# --- Membuat User di Sistem dengan Penanganan Error ---
+# Validasi durasi adalah angka
+if ! [[ "$DURATION" =~ ^[0-9]+$ ]]; then
+    echo "Error: Durasi harus berupa angka."
+    exit 1
+fi
+
+# Hitung tanggal expired dengan format yang konsisten
+EXPIRED_DATE=$(date -d "+$DURATION days" +"%Y-%m-%d")
+EXPIRED_DISPLAY=$(date -d "+$DURATION days" +"%b %d, %Y")
+# --- Cek apakah user sudah ada ---
 if id "$USERNAME" &>/dev/null; then
     echo "Error: User '$USERNAME' sudah ada."
     exit 1
 fi
 
-useradd -e "$EXPIRED_UNIX" -s /bin/false -M "$USERNAME"
+# Cek apakah username sudah ada di file /etc/ssh/.ssh.db
+if grep -q "^### $USERNAME " /etc/ssh/.ssh.db; then
+    echo "Error: User '$USERNAME' sudah ada di database."
+    exit 1
+fi
+
+# --- Membuat User di Sistem ---
+useradd -e "$EXPIRED_DATE" -s /bin/false -M "$USERNAME"
 if [ $? -ne 0 ]; then
     echo "Error: Gagal membuat user '$USERNAME'."
     exit 1
 fi
+
 echo -e "$PASSWORD\n$PASSWORD\n" | passwd "$USERNAME" &> /dev/null
 
 # --- Mengambil Informasi Server ---
 domain=$(cat /etc/xray/domain 2>/dev/null || echo "not_set")
 ISP=$(cat /root/.isp 2>/dev/null || echo "Unknown")
 CITY=$(cat /root/.city 2>/dev/null || echo "Unknown")
+
+# --- Membuat direktori jika belum ada ---
+mkdir -p /etc/xray/sshx
+mkdir -p /etc/xray/sshx/akun
+mkdir -p /var/www/html/
+
+# --- Simpan limit IP ---
+echo "$IP_LIMIT" > /etc/julak/limit/ssh/ip//${USERNAME}
 
 # --- Membuat File .txt di Web Server ---
 cat > /var/www/html/ssh-${USERNAME}.txt <<-END
