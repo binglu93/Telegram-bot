@@ -137,7 +137,7 @@ OpenVPN SSL     :  http://$domain:81/ssl.ovpn
 OpenVPN TCP     :  http://$domain:81/tcp.ovpn
 OpenVPN UDP     :  http://$domain:81/udp.ovpn
 ◇━━━━━━━━━━━━━━━━━◇
-Save Link Account: http://$domain:81/ssh-$USERNAME.txt
+Save Link Account: https://$domain:81/ssh-$USERNAME.txt
 ◇━━━━━━━━━━━━━━━━━◇
 END
 
