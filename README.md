@@ -31,6 +31,6 @@
 ```bash
 cd /root
 rm -f install-boot
-wget https://github.com/kdg-hss/Telegram-bot/raw/refs/heads/main/install-boot
+wget https://github.com/binglu93/Telegram-bot/raw/refs/heads/main/install-boot
 chmod +x install-boot
 ./install-boot
