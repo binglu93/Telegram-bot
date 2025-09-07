@@ -29,6 +29,9 @@ if grep -q "\"$user\"" "$CONFIG_FILE"; then
     exit 1
 fi
 
+# --- Simpan limit IP ---
+echo "$iplim" > /etc/julak/limit/ssh/ip//${USERNAME}
+
 # Add to config
 sed -i '/#vmess$/a\### '"$user $exp"'\
 },{"id": "'""$uuid""'","alterId": '"0"',"email": "'""$user""'"' /etc/xray/config.json
@@ -80,9 +83,7 @@ TERIMAKASIH TELAH BERBELANJA VPN
 "
 
 # Save log
-LOG_DIR="/etc/vmess/akun"
-mkdir -p "$LOG_DIR"
-echo "$TEXT" > "${LOG_DIR}/vmess-${user}.log"
+echo "$TEXT" > "/etc/xray/log-create-${user}.log"
 
 # Output
 echo "$TEXT"
