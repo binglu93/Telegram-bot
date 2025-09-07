@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # =================================================================
 #           Skrip Pembuatan Akun SSH untuk Hokage-BOT
 #           Disesuaikan dengan Format VPS
@@ -172,7 +173,7 @@ cat << EOF
 💾 Save Full Config:
 https://${domain}:81/ssh-${USERNAME}.txt
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
-🙏 Terima kasih telah order di Hokage Legend
+🙏 Terima kasih telah order di Julak SSH
 EOF
 
 # Mengakhiri skrip dengan status sukses
