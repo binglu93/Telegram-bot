@@ -38,7 +38,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     database.add_user_if_not_exists(user.id, user.first_name, user.username)
     await update.message.reply_text(
         "🤖 Selamat datang di Bot Julak SSH 🤖\n\n"
-        "Silahkan pilih menu di bawah ini !",
+        "🇮🇩Pilih salah satu menu di bawah ini 🇮🇩",
         reply_markup=keyboards.get_main_menu_keyboard()
     )
     return ROUTE
@@ -48,34 +48,34 @@ async def menu(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     if target_message:
         if update.callback_query and target_message.text:
             await target_message.edit_text(
-                "Please select from the menu below:",
+                "Silakan pilih dari menu di bawah ini:",
                 reply_markup=keyboards.get_main_menu_keyboard()
             )
         else:
             await update.effective_chat.send_message(
-                "Please select from the menu below:",
+                "Silakan pilih dari menu di bawah ini:",
                 reply_markup=keyboards.get_main_menu_keyboard()
             )
     return ROUTE
 
 async def handle_script_error(update: Update, context: ContextTypes.DEFAULT_TYPE, error: Exception):
-    msg = f"An unexpected error occurred: {error}"
+    msg = f"Terjadi kesalahan tak terduga: {error}"
     if isinstance(error, subprocess.CalledProcessError):
         error_output = error.stdout.strip() or error.stderr.strip()
-        msg = error_output or "Script failed with a non-zero exit code but no error output."
+        msg = error_output or "Skrip gagal dengan kode keluar bukan nol tetapi tidak ada keluaran kesalahan."
     elif isinstance(error, FileNotFoundError):
-        msg = f"Script file not found ({error}). Please check the path and permissions."
+        msg = f"File skrip tidak ditemukan ({error}). Silakan periksa jalur dan izin."
     elif isinstance(error, TimeoutError):
-        msg = "Script execution timed out. It took too long to respond."
+        msg = "Waktu eksekusi skrip habis. Responsnya terlalu lama.."
 
-    text_to_send = f"❌ Operation Failed\n\nReason:\n{msg}"
+    text_to_send = f"❌ Operasi Gagal\n\nReason:\n{msg}"
 
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text=text_to_send,
         reply_markup=keyboards.get_back_to_menu_keyboard()
     )
-    logger.error(f"Script execution error: {msg}", exc_info=True)
+    logger.error(f"Kesalahan eksekusi skrip: {msg}", exc_info=True)
     return ROUTE
 
 async def handle_backup(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
@@ -115,7 +115,7 @@ async def handle_backup(update: Update, context: ContextTypes.DEFAULT_TYPE) -> i
     except Exception as e:
         await handle_script_error(update, context, e)
 
-    await context.bot.send_message(chat_id, "Proses selesai.", reply_markup=keyboards.get_back_to_menu_keyboard())
+    await context.bot.send_message(chat_id, "Proses selesai sayangku.", reply_markup=keyboards.get_back_to_menu_keyboard())
 
     return ROUTE
 
