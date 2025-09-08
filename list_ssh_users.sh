@@ -19,7 +19,7 @@ if [[ ${NUMBER_OF_CLIENTS} == '0' ]]; then
 else
     echo -e "✨ *D A F T A R  A K U N  S S H* ✨"
     echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo -e "〄  *USER*             *EXPIRED*"
+    echo -e "〄  *USER*   *PASS*  *EXPIRED*"
     echo -e "―――――――――――――――――――――――――――――"
 
     # Loop daftar user dari file config
@@ -27,7 +27,7 @@ else
         user=$(echo "$line" | awk '{print $2}')
         pass=$(echo "$line" | awk '{print $3}')
         exp=$(echo "$line" | awk '{print $4}')
-        printf "👤 %-15s ⏳ %s\n" "$user" "$exp"
+        printf "👤 %-15s %s\n" "$user" "$uuid" "$exp"
     done
 
     echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
