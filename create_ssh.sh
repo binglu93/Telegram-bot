@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # =================================================================
-#           Skrip Pembuatan Akun SSH untuk Hokage-BOT
-#           Disesuaikan dengan Format VPS
+#           Skrip Pembuatan Akun SSH untuk Julak-BOT
+#           Versi Final: Diperbaiki & Disederhanakan
 # =================================================================
 
 # --- Validasi Input ---
@@ -17,81 +17,64 @@ USERNAME=$1
 PASSWORD=$2
 DURATION=$3
 IP_LIMIT=$4
+EXPIRED_DATE=$(date -d "+$DURATION days" +"%b %d, %Y")
+EXPIRED_UNIX=$(date -d "+$DURATION days" +"%Y-%m-%d")
 
-# Validasi durasi adalah angka
-if ! [[ "$DURATION" =~ ^[0-9]+$ ]]; then
-    echo "Error: Durasi harus berupa angka."
-    exit 1
-fi
-
-# Hitung tanggal expired dengan format yang konsisten
-EXPIRED_DATE=$(date -d "+$DURATION days" +"%Y-%m-%d")
-EXPIRED_DISPLAY=$(date -d "+$DURATION days" +"%b %d, %Y")
-# --- Cek apakah user sudah ada ---
+# --- Membuat User di Sistem dengan Penanganan Error ---
 if id "$USERNAME" &>/dev/null; then
     echo "Error: User '$USERNAME' sudah ada."
     exit 1
 fi
 
-# Cek apakah username sudah ada di file /etc/ssh/.ssh.db
-if grep -q "^### $USERNAME " /etc/ssh/.ssh.db; then
-    echo "Error: User '$USERNAME' sudah ada di database."
-    exit 1
-fi
-
-# --- Membuat User di Sistem ---
-useradd -e "$EXPIRED_DATE" -s /bin/false -M "$USERNAME"
+useradd -e "$EXPIRED_UNIX" -s /bin/false -M "$USERNAME"
 if [ $? -ne 0 ]; then
     echo "Error: Gagal membuat user '$USERNAME'."
     exit 1
 fi
-
 echo -e "$PASSWORD\n$PASSWORD\n" | passwd "$USERNAME" &> /dev/null
+
+# --- Simpan limit IP ---
+echo "$IP_LIMIT" > /etc/julak/limit/ssh/ip//${USERNAME}
 
 # --- Mengambil Informasi Server ---
 domain=$(cat /etc/xray/domain 2>/dev/null || echo "not_set")
 ISP=$(cat /root/.isp 2>/dev/null || echo "Unknown")
 CITY=$(cat /root/.city 2>/dev/null || echo "Unknown")
 
-# --- Membuat direktori jika belum ada ---
-mkdir -p /etc/xray/sshx
-mkdir -p /etc/xray/sshx/akun
-mkdir -p /var/www/html/
-
-# --- Simpan limit IP ---
-echo "$IP_LIMIT" > /etc/julak/limit/ssh/ip//${USERNAME}
-
 # --- Membuat File .txt di Web Server ---
 cat > /var/www/html/ssh-${USERNAME}.txt <<-END
-SSH & OpenVPN Account Details
-===============================
-Username        : $USERNAME
-Password        : $PASSWORD
-Expired On      : $EXPIRED_DISPLAY
--------------------------------
-Host / Server   : $domain
-ISP             : $ISP
-City            : $CITY
-Login Limit     : $IP_LIMIT IP
--------------------------------
-Port Details:
-- OpenSSH       : 22
-- Dropbear      : 143, 109
-- SSH UDP       : 1-65535
-- SSH WS        : 80, 8080
-- SSH SSL WS    : 443
-- SSL/TLS       : 443
-- OVPN WS SSL   : 2086
-- OVPN SSL      : 990
-- OVPN TCP      : 1194
-- OVPN UDP      : 2200
-- BadVPN UDP    : 7100, 7200, 7300
--------------------------------
-OpenVPN Configs:
-- OVPN SSL      : http://$domain:81/ssl.ovpn
-- OVPN TCP      : http://$domain:81/tcp.ovpn
-- OVPN UDP      : http://$domain:81/udp.ovpn
-===============================
+---------------------------------------------------
+Julak Bantur Autoscript 
+---------------------------------------------------
+
+Format SSH OVPN Account
+---------------------
+Username         : $USERNAME
+Password         : $PASSWORD
+Expired          : $EXPIRED_DATE
+---------------------
+Host             : $domain
+Port OpenSSH     : 443, 80, 22
+Port UdpSSH      : 1-65535,1-7200,1-7300,1-10000
+Port Dropbear    : 443, 109
+Port Dropbear WS : 443, 109
+Port SSH WS      : 80,8080
+Port SSH SSL WS  : 443
+Port SSL/TLS     : 443
+Port OVPN WS SSL : 443
+Port OVPN SSL    : 443
+Port OVPN TCP    : 443, 1194
+Port OVPN UDP    : 2200
+BadVPN UDP       : 7100, 7300, 7300
+---------------------
+Ssh Udp Custom : $domain:1-65535@$USERNAME:$PASSWORD
+---------------------
+Payload WSS: GET wss://[host]/ HTTP/1.1[crlf]Host: bug.com[crlf]Upgrade: websocket[crlf][crlf] 
+---------------------
+Remote Proxy : bug.com:8080
+---------------------
+@Premium_Script
+---------------------
 END
 
 # =======================================================
@@ -102,43 +85,39 @@ echo "### $USERNAME $PASSWORD $EXPIRED_DATE" >> /etc/ssh/.ssh.db
 
 # --- Membuat log file ---
 cat > /etc/xray/log-createssh-${USERNAME}.log <<-END
-◇━━━━━━━━━━━━━━━━━◇
-SSH Premium Account
-◇━━━━━━━━━━━━━━━━━◇
-Username        :  $USERNAME
-Password        :  $PASSWORD
-Expired On      :  $EXPIRED_DISPLAY
-◇━━━━━━━━━━━━━━━━━◇
-ISP             :  $ISP
-CITY            :  $CITY
-Host            :  $domain
-Login Limit     :  ${IP_LIMIT} IP
-Port OpenSSH    :  22
-Port Dropbear   :  109, 143
-Port SSH UDP    :  1-65535
-Port SSH WS     :  80, 8080
-Port SSH SSL WS :  443
-Port SSL/TLS    :  443
-Port OVPN WS SSL:  2086
-Port OVPN SSL   :  990
-Port OVPN TCP   :  1194
-Port OVPN UDP   :  2200
-Proxy Squid     :  3128
-BadVPN UDP      :  7100, 7300, 7300
-◇━━━━━━━━━━━━━━━━━◇
-UDP CUSTOM      : $domain:1-65535@$USERNAME:$PASSWORD
-◇━━━━━━━━━━━━━━━━━◇
-HTTP COSTUM     : $domain:80@$USERNAME:$PASSWORD
-◇━━━━━━━━━━━━━━━━━◇
-Payload WS/WSS  :
-GET / HTTP/1.1[crlf]Host: [host][crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: ws[crlf][crlf]
-◇━━━━━━━━━━━━━━━━━◇
-OpenVPN SSL     :  http://$domain:81/ssl.ovpn
-OpenVPN TCP     :  http://$domain:81/tcp.ovpn
-OpenVPN UDP     :  http://$domain:81/udp.ovpn
-◇━━━━━━━━━━━━━━━━━◇
-Save Link Account: https://$domain:81/ssh-$USERNAME.txt
-◇━━━━━━━━━━━━━━━━━◇
+
+echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo -e " SSH OVPN Account    "
+echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo -e "Username         : $USERNAME"
+echo -e "Password         : $PASSWORD" 
+echo -e "Masa Aktif       : $EXPIRED_DATE"
+echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo -e "Host             : $domain"
+echo -e "Limit Ip         : ${IP_LIMIT} Login"
+echo -e "Port OpenSSH     : 443,80,22"
+echo -e "Port SSH UDP     : 1-65535,1-7200,1-7300,1-10000"
+echo -e "Port Dropbear    : 443, 109 ,143"
+echo -e "Port SSH WS      : 80,8080"
+echo -e "Port SSH SSL WS  : 443"
+echo -e "Port SSL/TLS     : 443"
+echo -e "Port OVPN SSL    : 443"
+echo -e "Port OVPN TCP    : 443, 1194"
+echo -e "Port OVPN UDP    : 2200"
+echo -e "BadVPN UDP       : 7100, 7200, 7300"
+echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo -e "SSH UDP Custom   : $domain:1-65535@$USERNAME:$PASSWORD"
+echo -e "Link OVPN SSL    : http://$domain:81/ssl.ovpn"
+echo -e "Link OVPN TCP    : http://$domain:81/tcp.ovpn"
+echo -e "Link OVPN UDP    : http://$domain:81/udp.ovpn"
+echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo -e "Payload Ws       : GET ws://[host]/ HTTP/1.1[crlf]Host: bug.com[crlf]Connection: Upgrade[crlf]User-Agent: [ua][crlf]Upgrade: websocket[crlf][crlf]" 
+echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo -e "Save Link Account: https://$domain:81/ssh-$USERNAME.txt"
+echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo -e "        Script By Julak Bantur             "
+echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+
 END
 
 # --- Menampilkan Output Lengkap untuk Bot Telegram (Dipercantik) ---
@@ -149,15 +128,13 @@ cat << EOF
   ┣ Username   : ${USERNAME}
   ┣ Password   : ${PASSWORD}
   ┣ Host       : ${domain}
-  ┗ Expired On : ${EXPIRED_DISPLAY}
+  ┗ Expired On : ${EXPIRED_DATE}
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
 🔌 Connection Info
-  ┣ ISP        : ${ISP}
-  ┣ City       : ${CITY}
   ┣ Limit      : ${IP_LIMIT} Device(s)
   ┣ OpenSSH    : 22
   ┣ Dropbear   : 109, 143
-  ┣ Udp-Custom : 1-65535
+  ┣ Udp Custom : 1-65535
   ┣ SSL/TLS    : 443
   ┣ SSH WS     : 80, 8080
   ┣ SSH SSL WS : 443
@@ -167,6 +144,7 @@ cat << EOF
   ┣ OVPN TCP : http://${domain}:81/tcp.ovpn
   ┣ OVPN UDP : http://${domain}:81/udp.ovpn
   ┗ OVPN SSL : http://${domain}:81/ssl.ovpn
+  
   📋 Payload WS/WSS:
   GET / HTTP/1.1[crlf]Host: ${domain}[crlf]Upgrade: websocket[crlf]Connection: upgrade[crlf][crlf]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━
