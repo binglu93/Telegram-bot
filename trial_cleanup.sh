@@ -16,14 +16,14 @@ while IFS= read -r line; do
         config_changed=1
         if [ "$ACC_TYPE" = "ssh" ]; then
             userdel -r "$USERNAME"
-            sed -i "/^### $USERNAME /d" /etc/xray/ssh
+            sed -i "/^### $USERNAME /d" /etc/ssh/.ssh.db
         elif [ "$ACC_TYPE" = "vmess" ] || [ "$ACC_TYPE" = "vless" ] || [ "$ACC_TYPE" = "trojan" ]; then
             sed -i "/\"email\": \"$USERNAME\"/d" "$CONFIG_FILE"
-            sed -i "/\#vm $USERNAME /d" "$CONFIG_FILE"
+            sed -i "/\### $USERNAME /d" "$CONFIG_FILE"
             sed -i "/\#vmg $USERNAME /d" "$CONFIG_FILE"
-            sed -i "/\#vl $USERNAME /d" "$CONFIG_FILE"
+            sed -i "/\#& $USERNAME /d" "$CONFIG_FILE"
             sed -i "/\#vlg $USERNAME /d" "$CONFIG_FILE"
-            sed -i "/\#tr $USERNAME /d" "$CONFIG_FILE"
+            sed -i "/\#! $USERNAME /d" "$CONFIG_FILE"
             sed -i "/\#trg $USERNAME /d" "$CONFIG_FILE"
         fi
     else
