@@ -43,7 +43,7 @@ renew_vmess() {
     # Dapatkan tanggal kadaluwarsa saat ini untuk user dari config.json
     # Kita perlu mengambil yang paling relevan (baik dari #vmg atau #vm)
     # Asumsi #vmg dan #vm memiliki tanggal yang sama untuk user yang sama
-    current_exp_line=$(grep -E "^#vmg $USERNAME |^#vm $USERNAME " "$CONFIG_FILE" | head -n 1)
+    current_exp_line=$(grep -E "^#vmg $USERNAME |^### $USERNAME " "$CONFIG_FILE" | head -n 1)
     
     if [ -z "$current_exp_line" ]; then
         echo "❌ Error: Could not find user $USERNAME's entry to determine current expiry."
@@ -83,7 +83,7 @@ renew_vmess() {
     # Ganti tanggal kadaluwarsa lama ($current_exp_date_raw) dengan yang baru ($new_exp_system)
     # Ini akan dilakukan untuk kedua jenis penanda (#vmg dan #vm)
     sed -i "s|#vmg $USERNAME $current_exp_date_raw|#vmg $USERNAME $new_exp_system|g" "$CONFIG_FILE"
-    sed -i "s|#vm $USERNAME $current_exp_date_raw|#vm $USERNAME $new_exp_system|g" "$CONFIG_FILE"
+    sed -i "s|### $USERNAME $current_exp_date_raw|### $USERNAME $new_exp_system|g" "$CONFIG_FILE"
 
     # Log the action
     echo "[$(date '+%Y-%m-%d %H:%M:%S')] Renewed VMESS $USERNAME for $DAYS days (new expiry: $new_exp_system) by Admin ID: $ADMIN_ID" >> "$LOG_FILE"
