@@ -15,7 +15,9 @@ if [ "$#" -ne 1 ]; then
 fi
 
 USERNAME=$1
-FILE_INFO="/home/vps/public_html/ssh-${USERNAME}.txt"
+FILE_INFO="/var/www/html/ssh-${USERNAME}.txt"
+FILE_LOG="/etc/xray/log-createssh-${USERNAME}.log"
+FILE_LIMIT="/etc/julak/limit/ssh/ip//${USERNAME}"
 
 # --- Validasi User ---
 # Periksa apakah user benar-benar ada sebelum mencoba menghapus
@@ -27,10 +29,22 @@ fi
 # --- Proses Penghapusan ---
 # Hapus user dan direktori home-nya (-r flag)
 userdel -r "$USERNAME" &>/dev/null
+exp=$(grep -w "^### $user" "/etc/ssh/.ssh.db" | cut -d ' ' -f 3 | sort | uniq)
+echo "/^### $user $exp /,/^},{/d" /etc/ssh/.ssh.db
+
+# Hapus Log create user Jika ada
+if [ -f "$FILE_LOG" ]; then
+    rm -f "$FILE_LOG"
+fi
 
 # Hapus file info di web server jika ada
 if [ -f "$FILE_INFO" ]; then
     rm -f "$FILE_INFO"
+fi
+
+# Hapus Limit Ip user jika ada
+if [ -f "$FILE_LIMIT" ]; then
+    rm -f "$FILE_LIMIT"
 fi
 
 # --- Menampilkan Output Konfirmasi untuk Bot Telegram ---
