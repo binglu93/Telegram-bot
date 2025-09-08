@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ====================================================
-#        SSH Trial Account Creator
+#        BOT Trial Account SSH
 # ====================================================
 
 TIMER_MINUTE="60"
@@ -9,7 +9,6 @@ TRIAL_LOG_FILE="/etc/julak-bot/trial_users.log"
 
 # Server info
 domain=$(cat /etc/xray/domain 2>/dev/null)
-sldomain=$(cat /etc/xray/dns 2>/dev/null)
 
 # Generate random username
 Login="trial-$(tr -dc A-Z0-9 </dev/urandom | head -c 4)"
@@ -24,7 +23,7 @@ useradd -e "$(date -d "1 day" +"%Y-%m-%d")" -s /bin/false -M "$Login" || {
 
 # Set password
 echo -e "$Pass\n$Pass\n" | passwd "$Login" &> /dev/null
-echo "### $Login $(date -d "1 day" +"%Y-%m-%d") $Pass" >> /etc/xray/ssh
+echo "### $Login $(date -d "1 day" +"%Y-%m-%d") $Pass" >> /etc/ssh/.ssh.db
 
 # Schedule deletion
 (crontab -l 2>/dev/null; echo "*/$TIMER_MINUTE * * * * userdel -r $Login && rm -f /etc/cron.d/trialssh${Login}") | crontab -
