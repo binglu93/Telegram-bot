@@ -35,14 +35,14 @@ wget https://github.com/binglu93/Telegram-bot/raw/refs/heads/main/install-boot
 chmod +x install-boot
 ./install-boot
 
-### 🇮🇩 JULAK BANTUR AUTOSCRIPT 🇮🇩
-``` ORDER AKUN VPN
-``` SEWA VPS
-``` SEWA AUTOSCRIPT
-``` OPEN SOURCE AUTOSCRIPT
+## 🇮🇩 JULAK BANTUR AUTOSCRIPT 🇮🇩
+>> ORDER AKUN VPN
+>> SEWA VPS
+>> SEWA AUTOSCRIPT
+>> OPEN SOURCE AUTOSCRIPT
 
 # ADMIN
-``` https://wa.me/+6285166600428
-``` htpps://t.me/rajaganjil93
+• https://wa.me/+6285166600428
+• htpps://t.me/rajaganjil93
 
 ©JulakSSH
