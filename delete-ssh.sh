@@ -29,8 +29,7 @@ fi
 # --- Proses Penghapusan ---
 # Hapus user dan direktori home-nya (-r flag)
 userdel -r "$USERNAME" &>/dev/null
-exp=$(grep -w "^### $USERNAME" "/etc/ssh/.ssh.db" | cut -d ' ' -f 4 | sort | uniq)
-echo "/^### $USERNAME $exp /,/^},{/d" /etc/ssh/.ssh.db
+sed -i "/^### $USERNAME /,/^},{/d" /etc/ssh/.ssh.db
 
 # Hapus Log create user Jika ada
 if [ -f "$FILE_LOG" ]; then
