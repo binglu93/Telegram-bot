@@ -14,19 +14,18 @@ fi
 
 user="$1"
 CONFIG_FILE="/etc/xray/config.json"
-LOG_DIR="/etc/vmess/akun" # Direktori tempat file log akun disimpan
-HOME_VPS_DIR="/home/vps/public_html" # Direktori untuk file .txt yang mungkin dibuat
+HOME_VPS_DIR="/var/www/html" # Direktori untuk file .txt yang mungkin dibuat
 
 echo "⏳ Memulai penghapusan akun VMESS untuk username: $user"
 
 # --- Langkah 1: Memeriksa apakah username ada di konfigurasi dan mendapatkan exp date ---
-# Penting: Kita butuh tanggal kadaluarsa (exp) untuk sed agar cocok dengan pola #vm user exp
+# Penting: Kita butuh tanggal kadaluarsa (exp) untuk sed agar cocok dengan pola ### user exp
 # Jika user sudah expired, grep mungkin tidak menemukan entri.
-# Oleh karena itu, kita akan mencari username saja atau mengambil semua baris #vm/#vmg.
+# Oleh karena itu, kita akan mencari username saja atau mengambil semua baris ###/#vmg.
 
-# Cari baris yang mengandung username (dari #vmg atau #vm)
+# Cari baris yang mengandung username (dari #vmg atau ###)
 VMG_ENTRY=$(grep -E "^#vmg $user " "$CONFIG_FILE")
-VM_ENTRY=$(grep -E "^#vm $user " "$CONFIG_FILE")
+VM_ENTRY=$(grep -E "^### $user " "$CONFIG_FILE")
 
 # Jika tidak ditemukan entri sama sekali
 if [ -z "$VMG_ENTRY" ] && [ -z "$VM_ENTRY" ]; then
@@ -62,9 +61,9 @@ fi
 
 # Hapus entri dari inbound VMESS (WebSocket)
 if [ -z "$exp" ]; then
-    sed -i "/^#vm $user /,/^},{/d" "$CONFIG_FILE"
+    sed -i "/^### $user /,/^},{/d" "$CONFIG_FILE"
 else
-    sed -i "/^#vm $user $exp/,/^},{/d" "$CONFIG_FILE"
+    sed -i "/^### $user $exp/,/^},{/d" "$CONFIG_FILE"
 fi
 
 # --- Verifikasi penghapusan (opsional, untuk debugging) ---
@@ -78,7 +77,7 @@ fi
 echo "⏳ Menghapus file log dan file terkait..."
 
 # Hapus file log akun utama
-LOG_FILE="${LOG_DIR}/vmess-${user}.log"
+LOG_FILE="/etc/xray/log-create-${user}.log"
 if [ -f "$LOG_FILE" ]; then
     rm "$LOG_FILE"
     echo "✅ File log akun '$LOG_FILE' dihapus."
@@ -87,7 +86,7 @@ else
 fi
 
 # Hapus file IP limit (dari script del-vmess Anda)
-IP_LIMIT_FILE="/etc/vmess/${user}IP"
+IP_LIMIT_FILE="/etc/julak/limit/vmess/ip/${user}"
 if [ -f "$IP_LIMIT_FILE" ]; then
     rm "$IP_LIMIT_FILE"
     echo "✅ File IP limit '$IP_LIMIT_FILE' dihapus."
