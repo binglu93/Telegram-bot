@@ -2,7 +2,7 @@
 set -e
 
 # ==================================================================
-#         ENHANCED TROJAN TRIAL CREATOR (Telegram Optimized)
+#         BOT TROJAN TRIAL (Telegram Optimized)
 # ==================================================================
 
 TIMER_MINUTE="60"
@@ -24,9 +24,9 @@ if grep -q -w "$user" "$CONFIG_FILE"; then
 fi
 
 # Add to config
-sed -i '/#trojanws$/a\#tr '"$user $exp $uuid"'\
+sed -i '/#trojanws$/a\#! '"$user $exp $uuid"'\
 },{"password": "'""$uuid""'","email": "'""$user""'"' /etc/xray/config.json
-sed -i '/#trojangrpc$/a\#trg '"$user $exp"'\
+sed -i '/#trojangrpc$/a\#trg '"$user $exp $uuid"'\
 },{"password": "'""$uuid""'","email": "'""$user""'"' /etc/xray/config.json
 
 # Schedule deletion
@@ -69,9 +69,7 @@ cat <<EOF
 EOF
 
 # Create log file
-LOG_DIR="/etc/trojan/akun"
-mkdir -p "$LOG_DIR"
-cat <<EOF > "${LOG_DIR}/log-create-${user}.log"
+cat <<EOF > "/etc/xray/log-create-${user}.log"
 🛡️ TRIAL TROJAN ACCOUNT 🛡️
 =========================
 Username: $user
