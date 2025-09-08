@@ -12,21 +12,22 @@ if [ ! -f "$CONFIG_FILE" ]; then
 fi
 
 # Hitung jumlah akun VLESS
-NUMBER_OF_CLIENTS=$(grep -c -E "^#vls " "$CONFIG_FILE")
+NUMBER_OF_CLIENTS=$(grep -c -E "^#vlg " "$CONFIG_FILE")
 
 if [[ ${NUMBER_OF_CLIENTS} == '0' ]]; then
     echo -e "🚫 *Tidak ada akun VLESS yang aktif*"
 else
     echo -e "📡 *D A F T A R  A K U N  V L E S S*"
     echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo -e "〄  *USER*             *EXPIRED*"
+    echo -e "〄  *USER*   *UUID*   *EXPIRED*"
     echo -e "―――――――――――――――――――――――――――――"
 
     # Ambil data user dari komentar #vls
-    grep -E "^#vls " "$CONFIG_FILE" | nl -w1 -s ' ' | while read -r num line; do
+    grep -E "^#vlg " "$CONFIG_FILE" | nl -w1 -s ' ' | while read -r num line; do
         user=$(echo "$line" | awk '{print $2}')
+        uuid=$(echo "$line" | awk '{print $4}')
         exp=$(echo "$line" | awk '{print $3}')
-        printf "👤 %-15s ⏳ %s\n" "$user" "$exp"
+        printf "👤 %-15s %s\n" "$user" "$uuid" "$exp"
     done
 
     echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
