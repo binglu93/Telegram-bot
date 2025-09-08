@@ -19,7 +19,7 @@ if [[ ${NUMBER_OF_CLIENTS} == '0' ]]; then
 else
     echo -e "🚀 *D A F T A R  A K U N  V M E S S*"
     echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo -e "〄  *USER*   *EXPIRED*   *UUID*"
+    echo -e "〄  *USER*   *UUID*   *EXPIRED*"
     echo -e "―――――――――――――――――――――――――――――"
 
     # List user dari config.json
@@ -27,7 +27,7 @@ else
         user=$(echo "$line" | awk '{print $2}')
         uuid=$(echo "$line" | awk '{print $4}')
         exp=$(echo "$line" | awk '{print $3}')
-        printf "👤 %-15s ⏳ %s\n" "$user" "$exp" "$uuid"
+        printf "👤 %-15s %s\n" "$user" "$uuid" "$exp"
     done
 
     echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
