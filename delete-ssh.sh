@@ -22,15 +22,15 @@ FILE_LIMIT="/etc/julak/limit/ssh/ip//${USERNAME}"
 # --- Validasi User ---
 # Periksa apakah user benar-benar ada sebelum mencoba menghapus
 if ! id "$USERNAME" &>/dev/null; then
-    echo "<b>Peringatan:</b> User <code>$USERNAME</code> tidak ditemukan di sistem."
+    echo "Peringatan: User <code>$USERNAME tidak ditemukan di sistem."
     exit 1
 fi
 
 # --- Proses Penghapusan ---
 # Hapus user dan direktori home-nya (-r flag)
 userdel -r "$USERNAME" &>/dev/null
-exp=$(grep -w "^### $user" "/etc/ssh/.ssh.db" | cut -d ' ' -f 3 | sort | uniq)
-echo "/^### $user $exp /,/^},{/d" /etc/ssh/.ssh.db
+exp=$(grep -w "^### $USERNAME" "/etc/ssh/.ssh.db" | cut -d ' ' -f 4 | sort | uniq)
+echo "/^### $USERNAME $exp /,/^},{/d" /etc/ssh/.ssh.db
 
 # Hapus Log create user Jika ada
 if [ -f "$FILE_LOG" ]; then
@@ -49,11 +49,11 @@ fi
 
 # --- Menampilkan Output Konfirmasi untuk Bot Telegram ---
 cat << EOF
-✅ <b>Berhasil Dihapus</b>
+✅ Berhasil Dihapus
 
 Akun SSH dengan detail berikut telah dihapus secara permanen dari server:
 
-<b>Username:</b> <code>$USERNAME</code>
+Username: $USERNAME
 
 Semua data dan file terkait telah dibersihkan.
 EOF
