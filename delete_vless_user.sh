@@ -13,7 +13,8 @@ fi
 
 user="$1"
 CONFIG_FILE="/etc/xray/config.json"
-MARKER="#vl "
+MARKER="#vlg "
+BURIT="#&"
 
 # --- Langkah 1: Cek apakah user ada berdasarkan penanda komentar ---
 # Menggunakan [[:space:]] agar lebih fleksibel terhadap spasi atau tab
@@ -41,14 +42,17 @@ echo "⏳ UUID ditemukan: $uuid"
 sed -i '/"id": "'"$uuid"'"/d' "$CONFIG_FILE"
 echo "✅ Baris data JSON untuk '$user' telah dihapus."
 
-# 2. Hapus baris komentar penanda #vl.
+# 2. Hapus baris komentar penanda #vlg #&.
 sed -i "/^${MARKER}${user}[[:space:]]/d" "$CONFIG_FILE"
+sed -i "/^${BURIT}${user}[[:space:]]/d" "$CONFIG_FILE"
 echo "✅ Baris komentar untuk '$user' telah dihapus."
 
 # --- Langkah 4: Hapus file-file terkait (jika ada) ---
 # Disesuaikan dari contoh skrip Anda sebelumnya
 echo "⏳ Menghapus file-file sisa..."
-rm -f "/etc/vless/akun/log-create-${user}.log"
+rm -f "/etc/xray/log-create-${user}.log"
+rm -f "/etc/julak/limit/vless/ip/${user}"
+rm -f "/var/www/html/vless-$user.txt"
 echo "✅ File sisa telah dibersihkan."
 
 # --- Langkah 5: Restart layanan Xray ---
