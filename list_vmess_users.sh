@@ -1,30 +1,33 @@
 #!/bin/bash
-# Script: list_vmess_users.sh
+# Script: List user vmess
+# Update ®2025
 # Menampilkan daftar akun VMESS dari config.json dengan format elegan
+# ==================================================================
 
-CONFIG_FILE="/etc/xray/config.json"
+BURIT_GANAL="/etc/xray/config.json"
 export LANG=en_US.UTF-8
 
-if [ ! -f "$CONFIG_FILE" ]; then
-    echo -e "🚫 *File konfigurasi tidak ditemukan:* \`$CONFIG_FILE\`"
+if [ ! -f "$BURIT_GANAL" ]; then
+    echo -e "🚫 *File konfigurasi tidak ditemukan:* \`$BURIT_GANAL\`"
     exit 1
 fi
 
-NUMBER_OF_CLIENTS=$(grep -c -E "^#vmg " "$CONFIG_FILE")
+NUMBER_OF_CLIENTS=$(grep -c -E "^#vmg " "$BURIT_GANAL")
 
 if [[ ${NUMBER_OF_CLIENTS} == '0' ]]; then
     echo -e "🚫 *Tidak ada akun VMESS yang aktif*"
 else
     echo -e "🚀 *D A F T A R  A K U N  V M E S S*"
     echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo -e "〄  *USER*             *EXPIRED*"
+    echo -e "〄  *USER*   *EXPIRED*   *UUID*"
     echo -e "―――――――――――――――――――――――――――――"
 
     # List user dari config.json
-    grep -E "^#vmg " "$CONFIG_FILE" | nl -w1 -s ' ' | while read -r num line; do
+    grep -E "^#vmg " "$BURIT_GANAL" | nl -w1 -s ' ' | while read -r num line; do
         user=$(echo "$line" | awk '{print $2}')
+        uuid=$(echo "$line" | awk '{print $4}')
         exp=$(echo "$line" | awk '{print $3}')
-        printf "👤 %-15s ⏳ %s\n" "$user" "$exp"
+        printf "👤 %-15s ⏳ %s\n" "$user" "$exp" "$uuid"
     done
 
     echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
