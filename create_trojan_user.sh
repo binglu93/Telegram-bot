@@ -35,7 +35,7 @@ sed -i '/#trojanws$/a\#! '"$user $exp $uuid"'\
 },{"password": "'""$uuid""'","email": "'""$user""'"' "$CONFIG_FILE"
 
 # Tambahkan user ke Trojan gRPC
-sed -i '/#trojangrpc$/a\#trg '"$user $exp"'\
+sed -i '/#trojangrpc$/a\#trg '"$user $exp $uuid"'\
 },{"password": "'""$uuid""'","email": "'""$user""'"' "$CONFIG_FILE"
 
 
