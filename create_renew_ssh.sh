@@ -10,7 +10,7 @@
 
 # Configuration
 SSH_DB_SOURCE="/etc/ssh/.ssh.db" # <--- Sumber utama daftar SSH (sama dengan list_ssh_users.sh)
-SSH_LOG_DIR="/etc/xray/ssh/akun" # <--- Direktori log config user SSH (dari cekconfig Anda)
+SSH_LOG_DIR="/etc/xray/" # <--- Direktori log config user SSH (dari cekconfig Anda)
 LOG_FILE="/var/log/ssh_renew.log"
 DOMAIN=$(cat /etc/xray/domain)
 IP=$(curl -sS ipv4.icanhazip.com)
