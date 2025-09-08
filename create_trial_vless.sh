@@ -1,6 +1,6 @@
 #!/bin/bash
 # ==================================================================
-#       SKRIP LTS2 - CREATE VLESS TRIAL (Metode 'sed' seperti VMESS)
+#       SKRIP C1 - CREATE VLESS TRIAL (Metode 'sed' seperti VMESS)
 # ==================================================================
 
 # --- Parameter Trial (Diatur di sini) ---
@@ -30,13 +30,10 @@ fi
 # Tanpa penanda ini, skrip TIDAK akan berfungsi.
 
 # Tambahkan user ke VLESS WS
-sed -i '/#vless$/a\#vl '"$user $exp $uuid"'\
+sed -i '/#vless$/a\#& '"$user $exp $uuid"'\
 },{"id": "'""$uuid""'","email": "'""$user""'"' /etc/xray/config.json
-sed -i '/#vlessgrpc$/a\#vlg '"$user $exp"'\
+sed -i '/#vlessgrpc$/a\#vlg '"$user $exp $uuid"'\
 },{"id": "'""$uuid""'","email": "'""$user""'"' /etc/xray/config.json
-
-# Tambahkan komentar untuk skrip 'list_vless_users.sh'
-sed -i "2a#vls $user $exp" "$CONFIG_FILE"
 
 # --- Hasilkan Output ---
 # Atur variabel untuk tampilan
@@ -80,9 +77,7 @@ TEXT="
 "
 
 # Simpan log ke file
-LOG_DIR="/etc/vless/akun"
-mkdir -p "$LOG_DIR"
-echo "$TEXT" > "${LOG_DIR}/vless-${user}.log"
+echo "$TEXT" > "/etc/xray/log-create-${user}.log"
 
 # Tampilkan output ke stdout
 echo "$TEXT"
