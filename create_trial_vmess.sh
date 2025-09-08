@@ -23,7 +23,7 @@ if grep -q "\"$user\"" "$CONFIG_FILE"; then
 fi
 
 # Add to config
-sed -i '/#vmess$/a\#vm '"$user $exp"'\
+sed -i '/#vmess$/a\### '"$user $exp $uuid"'\
 },{"id": "'""$uuid""'","alterId": '"0"',"email": "'""$user""'"' /etc/xray/config.json
 sed -i '/#vmessgrpc$/a\#vmg '"$user $exp $uuid"'\
 },{"id": "'""$uuid""'","alterId": '"0"',"email": "'""$user""'"' /etc/xray/config.json
