@@ -1,5 +1,4 @@
-<h1 align="center">
-🚀 Telegram BoBot Installer - JULAK BANTUR
+<h1 align="center"> 🤖 BoBot Panel C1 By JULAK BANTUR 🤖
 </h1>
 
 <p align="center">
@@ -11,8 +10,9 @@
 ---
 
 > ⚠️ **PERINGATAN**  
-> Jangan gunakan script ini di luar autoscript LTS2 dari **JULAK VPN**.  
+> Khusus untuk Autoscript C1 dari **JULAK VPN**.
 > Penggunaan sembarangan dapat menyebabkan kerusakan pada konfigurasi sistem Anda!
+> Segala reseko dan bentuk kerusakan bukan tanggung jawab saya
 
 ---
 
@@ -34,3 +34,15 @@ rm -f install-boot
 wget https://github.com/binglu93/Telegram-bot/raw/refs/heads/main/install-boot
 chmod +x install-boot
 ./install-boot
+
+### 🇮🇩 JULAK BANTUR AUTOSCRIPT 🇮🇩
+``` ORDER AKUN VPN
+``` SEWA VPS
+``` SEWA AUTOSCRIPT
+``` OPEN SOURCE AUTOSCRIPT
+
+# ADMIN
+``` https://wa.me/+6285166600428
+``` htpps://t.me/rajaganjil93
+
+©JulakSSH
