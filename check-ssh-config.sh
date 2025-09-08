@@ -16,8 +16,8 @@ fi
 USERNAME=$1
 
 # Definisikan lokasi kedua jenis file konfigurasi
-DETAILED_LOG="/etc/xray/sshx/akun/log-create-${USERNAME}.log"
-SIMPLE_CONFIG="/home/vps/public_html/ssh-${USERNAME}.txt"
+DETAILED_LOG="/etc/xray/log-createssh-${USERNAME}.log"
+SIMPLE_CONFIG="/var/www/html/ssh-${USERNAME}.txt"
 
 # --- Logika Pengecekan Cerdas ---
 
