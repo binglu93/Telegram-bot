@@ -12,21 +12,22 @@ if [ ! -f "$CONFIG_FILE" ]; then
 fi
 
 # Hitung jumlah akun TROJAN
-NUMBER_OF_CLIENTS=$(grep -c -E "^#tr " "$CONFIG_FILE")
+NUMBER_OF_CLIENTS=$(grep -c -E "^#! " "$CONFIG_FILE")
 
 if [[ ${NUMBER_OF_CLIENTS} == '0' ]]; then
     echo -e "🚫 *Tidak ada akun TROJAN yang aktif*"
 else
     echo -e "🛡️ *D A F T A R  A K U N  T R O J A N*"
     echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-    echo -e "〄  *USER*             *EXPIRED*"
+    echo -e "〄  *USER*   *UUID*   *EXPIRED*"
     echo -e "―――――――――――――――――――――――――――――"
 
     # Ambil data user dari komentar #tr
-    grep -E "^#tr " "$CONFIG_FILE" | nl -w1 -s ' ' | while read -r num line; do
+    grep -E "^#! " "$CONFIG_FILE" | nl -w1 -s ' ' | while read -r num line; do
         user=$(echo "$line" | awk '{print $2}')
+        uuid=$(echo "$line" | awk '{print $4}')
         exp=$(echo "$line" | awk '{print $3}')
-        printf "👤 %-15s ⏳ %s\n" "$user" "$exp"
+        printf "👤 %-15s %s\n" "$user" "$uuid" "$exp"
     done
 
     echo -e "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
