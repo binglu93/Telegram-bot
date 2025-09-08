@@ -1,15 +1,18 @@
 #!/bin/bash
+# ==================================================================
 # Menampilkan daftar akun SSH aktif dengan format elegan untuk Telegram
+#             (Adapted from user's del-vmess function)
+# ==================================================================
 
-CONFIG_FILE="/etc/xray/ssh"
+CAWAT_LANDU="/etc/ssh/.ssh.db"
 export LANG=en_US.UTF-8
 
-if [ ! -f "$CONFIG_FILE" ]; then
+if [ ! -f "$CAWAT_LANDU" ]; then
     echo -e "🚫 *File konfigurasi tidak ditemukan!*"
     exit 1
 fi
 
-NUMBER_OF_CLIENTS=$(grep -c -E "^### " "$CONFIG_FILE")
+NUMBER_OF_CLIENTS=$(grep -c -E "^### " "$CAWAT_LANDU")
 
 if [[ ${NUMBER_OF_CLIENTS} == '0' ]]; then
     echo -e "🚫 *Tidak ada akun SSH yang aktif*"
@@ -20,9 +23,10 @@ else
     echo -e "―――――――――――――――――――――――――――――"
 
     # Loop daftar user dari file config
-    grep -E "^### " "$CONFIG_FILE" | while read -r line; do
+    grep -E "^### " "$CAWAT_LANDU" | while read -r line; do
         user=$(echo "$line" | awk '{print $2}')
-        exp=$(echo "$line" | awk '{print $3}')
+        pass=$(echo "$line" | awk '{print $3}')
+        exp=$(echo "$line" | awk '{print $4}')
         printf "👤 %-15s ⏳ %s\n" "$user" "$exp"
     done
 
