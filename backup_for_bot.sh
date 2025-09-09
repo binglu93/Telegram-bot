@@ -1,6 +1,6 @@
 #!/bin/bash
 # ==================================================================
-#       SKRIP BACKUP LTS2 - Telegram Bot Julak Pro
+#       SKRIP BACKUP C1 - Telegram Bot Julak Pro
 # ==================================================================
 # Deskripsi: Membuat backup, menyertakan data akun, dan
 #            menyediakan path lokal untuk dikirim via bot.
