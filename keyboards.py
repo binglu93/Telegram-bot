@@ -3,10 +3,10 @@ from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 def get_main_menu_keyboard() -> InlineKeyboardMarkup:
     keyboard = [
         [InlineKeyboardButton("🌐 SSH MANAJER", callback_data="menu_ssh")],
-        [InlineKeyboardButton("🚀 VMESS MANAJER", callback_data="menu_vmess")],
-        [InlineKeyboardButton("⚡ VLESS MANAJER", callback_data="menu_vless")],
-        [InlineKeyboardButton("🐴 TROJAN MANAJER", callback_data="menu_trojan")],
-        [InlineKeyboardButton("🔧 OTHER SETTING", callback_data="menu_tools")], # Tombol Tools
+        [InlineKeyboardButton("🚀 VMESS MANAJER", callback_data="menu_vmess"),
+        InlineKeyboardButton("⚡ VLESS MANAJER", callback_data="menu_vless")],
+        [InlineKeyboardButton("🐴 TROJAN MANAJER", callback_data="menu_trojan"),
+        InlineKeyboardButton("🔧 OTHER SETTING", callback_data="menu_tools")], # Tombol Tools
         [InlineKeyboardButton("❌ Tutup Menu", callback_data="close_menu")]
     ]
     return InlineKeyboardMarkup(keyboard)
